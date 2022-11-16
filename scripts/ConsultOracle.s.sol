@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.7.6;
+pragma solidity 0.8.13;
 
 import "forge-std/Script.sol";
 
-import "../contracts/UniswapV3OracleConsulter.sol";
+import "../contracts/interfaces/IUniswapV3OracleConsulter.sol";
 
 contract Storage {
     event Consulted(uint256 value);
@@ -23,9 +23,6 @@ contract ConsultOracle is Script {
     uint256 internal value;
 
     function run() external {
-        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-        vm.startBroadcast(deployerPrivateKey);
-
         // ERC20s
         address mainnetDai = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
         address mainnetWETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
@@ -44,14 +41,15 @@ contract ConsultOracle is Script {
         poolRoute[0] = mainnetDaiWETHPool;
         poolRoute[1] = mainnetAaveWETHPool;
 
-        value = UniswapV3OracleConsulter.consult(
-            poolRoute,
-            tokenAddressRoute,
-            14400,
-            1 ether
-        );
+        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+        vm.startBroadcast(deployerPrivateKey);
+
+        value = IUniswapV3OracleConsulter(
+            0x313F922BE1649cEc058EC0f076664500c78bdc0b
+        ).consult(poolRoute, tokenAddressRoute, 14400, 1 ether);
 
         Storage _storage = new Storage();
         _storage.setValue(value);
+        vm.stopBroadcast();
     }
 }

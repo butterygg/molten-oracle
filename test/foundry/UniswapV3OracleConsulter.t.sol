@@ -5,7 +5,7 @@ import "forge-std/Test.sol";
 
 import "@uniswap/v3-core/contracts/libraries/FullMath.sol";
 
-import "contracts/UniswapV3OracleConsulter.sol";
+import "contracts/libraries/UniswapV3OracleConsulter.sol";
 
 contract OracleLibraryTest is Test {
     uint256 public mainnetFork;
